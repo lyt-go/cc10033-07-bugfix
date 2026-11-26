@@ -70,3 +70,36 @@ body { margin: 0; background: #f6f8fb; color: #1f2937; }
 .analysis-chart { display: flex; align-items: flex-end; gap: 8px; height: 160px; padding: 12px 0; }
 .analysis-bar { flex: 1; border-radius: 4px 4px 0 0; background: var(--brand); min-width: 24px; position: relative; transition: height 0.4s; }
 .analysis-bar span { position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); font-size: 10px; color: var(--muted); white-space: nowrap; }
+/* 调度手工领取面板 */
+.claim-panel { background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; margin-bottom: 16px; }
+.claim-head { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; align-items: flex-start; }
+.claim-head h3, .plan-card h4 { margin: 0 0 4px; font-size: 15px; }
+.claim-desc { color: var(--muted); font-size: 12px; margin: 0; max-width: 720px; }
+.claim-actions { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; }
+.client-field span { display: block; font-size: 12px; color: var(--muted); margin-bottom: 2px; }
+.client-field input { padding: 6px 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; }
+.plan-card { border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-top: 12px; background: #fafbfc; }
+.plan-card-head { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; align-items: center; }
+.plan-state { margin-left: 8px; font-size: 12px; color: var(--brand); background: #eaf1fe; border-radius: 10px; padding: 2px 8px; }
+.capacity-line { display: flex; gap: 12px; font-size: 12px; color: var(--muted); flex-wrap: wrap; }
+.cap-ok { color: #15803d; font-weight: 600; }
+.cap-full { color: #b42318; font-weight: 600; }
+.deny-banner { margin: 10px 0; padding: 8px 10px; border-radius: 6px; background: #fef3f2; border: 1px solid #fecdca; color: #b42318; font-size: 12px; }
+.claim-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 14px; margin-top: 10px; }
+@media (max-width: 1100px) { .claim-grid { grid-template-columns: 1fr; } }
+.data-table.compact th, .data-table.compact td { padding: 6px 8px; font-size: 12px; }
+.data-table tr.head td { background: #eef4ff; font-weight: 600; }
+.enqueue-bar { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+.enqueue-bar input { width: 120px; padding: 6px 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; }
+.history-box { margin-top: 12px; }
+.history-box summary { cursor: pointer; font-size: 13px; color: var(--muted); margin-bottom: 8px; }
+.mono { font-family: ui-monospace, monospace; font-size: 11px; }
+.link.ok { color: #15803d; }
+.link.fail { color: #b42318; }
+.attempt-state { border-radius: 10px; padding: 2px 8px; font-size: 11px; }
+.state-active { background: #e0efff; color: #1d4ed8; }
+.state-succeeded { background: #dcfce7; color: #15803d; }
+.state-failed { background: #fee2e2; color: #b42318; }
+.notice-banner { margin: 8px 0; padding: 8px 12px; border-radius: 6px; font-size: 13px; }
+.notice-banner.ok { background: #ecfdf3; border: 1px solid #abefc6; color: #067647; }
+.notice-banner.err { background: #fef3f2; border: 1px solid #fecdca; color: #b42318; }

@@ -8,7 +8,7 @@ from typing import Any
 from fastapi import APIRouter, HTTPException, Query, Request
 from fastapi.responses import StreamingResponse
 
-from app.schemas import ActionPayload, ActionResult, EntryPayload, PageResult
+from app.schemas import ActionPayload, ActionResult, EntryPayload, PageResult, safe_entry
 from app.services import service_for
 
 router = APIRouter(prefix="/api", tags=["业务资源"])
@@ -38,7 +38,7 @@ def list_entries(
     }
     items, total = service.list_entries(
         filters=filters, keyword=keyword, status=status, page=page, size=size)
-    return PageResult(items=items, total=total, page=page, size=size)
+    return PageResult(items=[safe_entry(item) for item in items], total=total, page=page, size=size)
 
 
 @router.get("/{module}/export")
@@ -79,7 +79,7 @@ def get_entry(module: str, entry_id: int) -> dict[str, Any]:
     entry = service.get_entry(entry_id)
     if entry is None:
         raise HTTPException(status_code=404, detail=f"{service.ENTITY} {entry_id} 不存在或已归档")
-    return entry
+    return safe_entry(entry)
 
 
 @router.post("/{module}", response_model=ActionResult)
@@ -88,11 +88,11 @@ def create_entry(module: str, payload: EntryPayload) -> ActionResult:
     entry, missing = service.create_entry(payload.values)
     if missing:
         return ActionResult(ok=False, message=f"缺少必填字段：{'、'.join(missing)}")
-    return ActionResult(ok=True, message=f"{service.ENTITY}已登记", entry=entry)
+    return ActionResult(ok=True, message=f"{service.ENTITY}已登记", entry=safe_entry(entry))
 
 
 @router.post("/{module}/{entry_id}/actions", response_model=ActionResult)
 def run_action(module: str, entry_id: int, payload: ActionPayload) -> ActionResult:
     service = require_service(module)
     entry, message = service.run_action(entry_id, payload.action.strip())
-    return ActionResult(ok=entry is not None, message=message, entry=entry)
+    return ActionResult(ok=entry is not None, message=message, entry=safe_entry(entry))

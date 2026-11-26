@@ -28,6 +28,18 @@
       </span>
     </p>
 
+    <SchedulerQueuePanel
+      v-if="meta.key === 'scheduler'"
+      ref="schedulerPanel"
+      @notice="showNotice"
+    />
+
+    <MissionAttemptPanel v-if="meta.key === 'crawl_mission'" />
+
+    <p v-if="noticeMessage" class="notice-banner" :class="noticeKind" data-testid="panel-notice">
+      {{ noticeMessage }}
+    </p>
+
     <form class="filter-bar" @submit.prevent="reload">
       <label v-for="field in filterFields" :key="field" class="filter-item">
         <span>{{ field }}</span>
@@ -94,7 +106,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
 
 import {
   createEntry,
@@ -103,13 +116,19 @@ import {
   moduleMeta,
   runAction as applyAction,
 } from '@/api/backend-service'
+import MissionAttemptPanel from '@/components/MissionAttemptPanel.vue'
+import SchedulerQueuePanel from '@/components/SchedulerQueuePanel.vue'
 import type { EntryRow } from '@/data/types'
 
 const props = defineProps<{ moduleKey: string }>()
+const route = useRoute()
 const meta = moduleMeta(props.moduleKey)
 const rows = ref<EntryRow[]>([])
 const total = ref(0)
 const errorMessage = ref('')
+const noticeMessage = ref('')
+const noticeKind = ref<'ok' | 'err'>('ok')
+const schedulerPanel = ref<InstanceType<typeof SchedulerQueuePanel> | null>(null)
 const filters = ref<Record<string, string>>({})
 const filterFields = meta.fields.slice(0, 3)
 const showCreate = ref(false)
@@ -134,6 +153,18 @@ function resetFilters() {
   filters.value = {}
   void reload()
 }
+
+function showNotice(message: string, kind: 'ok' | 'err'): void {
+  noticeMessage.value = message
+  noticeKind.value = kind
+}
+
+watch(
+  () => route.query.plan,
+  () => {
+    if (props.moduleKey === 'scheduler') void schedulerPanel.value?.reload()
+  },
+)
 
 async function exportRows() {
   errorMessage.value = ''
